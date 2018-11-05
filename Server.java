@@ -3,21 +3,20 @@ import java.io.*;
 import java.util.*;
 
 public class Server{
-	BufferedReader reader;
-	PrintWriter writer;
-	ArrayList<PrintWriter> writerArray = new ArrayList<>();
+	private ArrayList<PrintWriter> writerArray = new ArrayList<>();
 
 	public static void main(String... args){	
 		Server server = new Server();
 		server.go();
 	}
-	public void go(){
+
+	private void go(){
 		try{
 			ServerSocket ss = new ServerSocket(8080);
 			
 			while(true){
 				Socket socket = ss.accept();
-				writer = new PrintWriter(socket.getOutputStream());
+				PrintWriter writer = new PrintWriter(socket.getOutputStream());
 				writerArray.add(writer);
 				new Thread(new NewThread(socket)).start();
 			}
@@ -28,6 +27,7 @@ public class Server{
 	}
 	private class NewThread implements Runnable{
 		Socket socket;
+		BufferedReader reader;
 		public NewThread(Socket socket){
 			this.socket = socket;
 			try{	
@@ -49,8 +49,8 @@ public class Server{
 		}
 	}
 
-		public void tellEveryone(String message){
-
+		private void tellEveryone(String message){
+			
 		for(PrintWriter p : writerArray){
 			try{
 				p.println(message);
